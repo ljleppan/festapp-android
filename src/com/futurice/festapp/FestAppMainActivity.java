@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.futurice.festapp.dao.ConfigDAO;
 import com.futurice.festapp.dao.GigDAO;
 import com.futurice.festapp.dao.NewsDAO;
+import com.futurice.festapp.domain.News;
 import com.futurice.festapp.domain.NewsArticle;
 import com.futurice.festapp.util.FestAppConstants;
 
@@ -85,7 +86,7 @@ public class FestAppMainActivity extends Activity {
 	}
 	
 	private void initializeNews() {
-		List<NewsArticle> latest = NewsDAO.getLatest(2);
+		List<News> latest = NewsDAO.getLatest(2, getBaseContext());
 		TextView v;
 		
 		if (latest.size() > 0) {
@@ -99,8 +100,8 @@ public class FestAppMainActivity extends Activity {
 		}
 	}
 	
-	private void setContentFromNewsArticle(NewsArticle newsArticle, TextView v) {
-		String content = newsArticle.getTitle()+"<br><small>"+newsArticle.getDateString()+"</small>";
+	private void setContentFromNewsArticle(News news, TextView v) {
+		String content = news.getTitle()+"<br><small>"+news.getTime().toString()+"</small>";
 		v.setText(Html.fromHtml(content));
 	}
 

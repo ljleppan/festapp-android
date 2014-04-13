@@ -1,5 +1,8 @@
 package com.futurice.festapp.util;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,6 +11,8 @@ import java.util.Map;
 public class CalendarUtil {
 	
 	private static final Map<Integer, String> weekDays = new HashMap<Integer, String>();
+	private static final String DATE_PARSER_TEMPLATE = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";	//2001-07-04T12:08:56.235-0700
+	private static final DateFormat DATE_PARSER = new SimpleDateFormat(DATE_PARSER_TEMPLATE);
 	
 	static {
 		weekDays.put(Calendar.MONDAY, "Maanantai");
@@ -32,4 +37,7 @@ public class CalendarUtil {
 		return (int) (diff / 1000 / 60);
 	}
 
+	public static Date parseDateFromString(String string) throws ParseException {
+		return DATE_PARSER.parse(string);
+	}
 }
