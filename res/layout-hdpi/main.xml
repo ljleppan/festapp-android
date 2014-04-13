@@ -76,6 +76,14 @@
         android:orientation="vertical" >
 
         <TextView
+            android:id="@+id/main_menu_news_content_1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" 
+            />
+        
+        <TextView
+            android:id="@+id/main_menu_news_content_2"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1" 
@@ -85,7 +93,7 @@
             android:id="@+id/main_menu_news_text"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="3"
+            android:layout_weight="1"
             android:gravity="center"
             android:textColor="#BABABA"
             android:text="@string/News"

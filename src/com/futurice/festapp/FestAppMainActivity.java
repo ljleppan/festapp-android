@@ -1,6 +1,7 @@
 package com.futurice.festapp;
 
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -8,6 +9,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -79,8 +81,29 @@ public class FestAppMainActivity extends Activity {
 		createMainMenuItems();
 		handleNotificationEvents();
 		setFonts();
+		initializeNews();
 	}
 	
+	private void initializeNews() {
+		List<NewsArticle> latest = NewsDAO.getLatest(2);
+		TextView v;
+		
+		if (latest.size() > 0) {
+			v = (TextView) findViewById(R.id.main_menu_news_content_1);
+			setContentFromNewsArticle(latest.get(0), v);
+		}
+		
+		if (latest.size() > 1) {
+			v = (TextView) findViewById(R.id.main_menu_news_content_2);
+			setContentFromNewsArticle(latest.get(1), v);
+		}
+	}
+	
+	private void setContentFromNewsArticle(NewsArticle newsArticle, TextView v) {
+		String content = newsArticle.getTitle()+"<br><small>"+newsArticle.getDateString()+"</small>";
+		v.setText(Html.fromHtml(content));
+	}
+
 	private void setFonts() {
 		setFont(findViewById(R.id.main_menu_news_text));
 		setFont(findViewById(R.id.main_menu_schedule_text));
