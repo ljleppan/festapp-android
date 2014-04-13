@@ -31,6 +31,12 @@ public class JSONUtil {
 		return j.getLong(name);
 	}
 	
+	/**
+	 * Parses a JSON string to a List<News>. Un-parseable news articles will not be put into the returned list.
+	 * @param json				The JSON string to parse
+	 * @return					List<News> parsed from the JSON
+	 * @throws JSONException	Thrown if unable to build a JSONArray from the input
+	 */
 	public static List<News> parseNewsFromJSON(String json) throws JSONException {
 		List<News> articles = new ArrayList<News>();
 		JSONArray list = new JSONArray(json);
@@ -39,7 +45,9 @@ public class JSONUtil {
 			try {
 				JSONObject newsObject = list.getJSONObject(i);
 				News article = parseSingleNewsArticleFromJSON(newsObject);
-				articles.add(article);
+				if (article != null){
+					articles.add(article);
+				}
 			} catch (Exception e) {
 				Log.w(TAG, "Received invalid JSON-structure", e);
 			}
@@ -48,7 +56,12 @@ public class JSONUtil {
 		return articles;
 	}
 	
-	private static News parseSingleNewsArticleFromJSON(JSONObject newsObject) throws JSONException{
+	/**
+	 * Parses a single JSONObject to a News object.
+	 * @param newsObject		The object that should be parsed
+	 * @return					A News object if parsing is succesfull, null otherwise.
+	 */
+	private static News parseSingleNewsArticleFromJSON(JSONObject newsObject){
 		try {
 			String title = JSONUtil.getString(newsObject, "title");
 			String teaserText = JSONUtil.getString(newsObject, "teaser_text");

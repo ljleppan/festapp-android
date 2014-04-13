@@ -38,6 +38,12 @@ public class CalendarUtil {
 		return (int) (diff / 1000 / 60);
 	}
 
+	/**
+	 * Parses a datestring provided by the backend server to a Date object
+	 * @param string			String to parse
+	 * @return					The parsed Date object
+	 * @throws ParseException	Thrown if parsing can not be finished for any reason
+	 */
 	public static Date parseDateFromString(String string) throws ParseException {
 		return DATE_PARSER.parse(string);
 	}
