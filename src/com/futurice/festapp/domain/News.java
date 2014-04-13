@@ -42,7 +42,7 @@ public class News {
 		return teaserText;
 	}
 
-	public void setTeaser_text(String teaserText) {
+	public void setTeaserText(String teaserText) {
 		this.teaserText = teaserText;
 	}
 
