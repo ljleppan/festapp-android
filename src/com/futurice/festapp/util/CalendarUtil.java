@@ -11,9 +11,9 @@ import java.util.Map;
 public class CalendarUtil {
 	
 	private static final Map<Integer, String> weekDays = new HashMap<Integer, String>();
-	private static final String DATE_PARSER_TEMPLATE = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-	private static final DateFormat DATE_PARSER = new SimpleDateFormat(DATE_PARSER_TEMPLATE);
+	private static final DateFormat JSON_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	private static final DateFormat DB_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private static final DateFormat UI_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
 	static {
 		weekDays.put(Calendar.MONDAY, "Maanantai");
@@ -37,6 +37,10 @@ public class CalendarUtil {
 		long diff = Math.abs(end.getTime() - start.getTime());
 		return (int) (diff / 1000 / 60);
 	}
+	
+	public static String formatDateToUIString(Date date){
+		return UI_DATE_FORMATTER.format(date);
+	}
 
 	/**
 	 * Parses a datestring provided by the backend server to a Date object
@@ -49,7 +53,7 @@ public class CalendarUtil {
 		if (s.contains("Z")){
 			s = s.replace("Z", "-0000");
 		}
-		return DATE_PARSER.parse(s);
+		return JSON_DATE_FORMATTER.parse(s);
 	}
 
 	/**
