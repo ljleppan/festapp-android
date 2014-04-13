@@ -36,6 +36,6 @@ public class FestAppConstants {
 	public static final String LAST_MODIFIED_FAQ = null;
 		
 	// DEBUG variables
-	public final static boolean F_DEBUG = true;
+	public final static boolean F_DEBUG = false;
 	public volatile static boolean F_FORCE_DATA_FETCH = false;
 }

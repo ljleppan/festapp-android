@@ -47,8 +47,11 @@ public class FestAppService extends Service{
 					updateNewsArticles();
 					updateFoodAndDrinkPage();
 					updateTransportationPage();
-					updateServicesPageData();
-					updateFrequentlyAskedQuestionsPageData();
+					// updating services or faq seems to hang
+					// TODO enable them when you want to
+					// implement new backend integration for them
+					//updateServicesPageData();
+					//updateFrequentlyAskedQuestionsPageData();
 					updateStages();
 					return;
 				}
@@ -67,7 +70,6 @@ public class FestAppService extends Service{
 
 						updateTransportationPage();
 						updateServicesPageData();
-
 						updateFrequentlyAskedQuestionsPageData();
 					}
 				} else {
@@ -111,7 +113,6 @@ public class FestAppService extends Service{
 					Log.d(TAG, "Backend task finished");
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-					return;
 				} finally{
 					FestAppConstants.F_FORCE_DATA_FETCH = false;
 					dataUpdateSem.release();
@@ -281,6 +282,7 @@ public class FestAppService extends Service{
 	
 	@Override
 	public void onDestroy() {
+		dataUpdateSem.release();
 		super.onDestroy();
 	}
 
