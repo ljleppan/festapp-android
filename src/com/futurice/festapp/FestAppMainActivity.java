@@ -145,7 +145,7 @@ public class FestAppMainActivity extends Activity {
 			    artistInfo.putExtra("gig.id", alertGigId);
 			    startActivity(artistInfo);
 			} else if (newsUrl != null) {
-				NewsArticle article = NewsDAO.findNewsArticle(getBaseContext(), newsUrl);
+				NewsArticle article = NewsDAO.findNews(getBaseContext(), newsUrl);
 				if (article != null) {
 					Intent i = new Intent(getBaseContext(), NewsContentActivity.class);
 					i.putExtra("news.title", article.getTitle());

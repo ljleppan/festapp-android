@@ -28,7 +28,7 @@ import com.futurice.festapp.R;
 public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final String DB_NAME = "festapp_db";
-	private static final int DB_VERSION = 2;
+	private static final int DB_VERSION = 7;
 	private static final String TAG = "DatabaseHelper";
 	
 	private Context context;
@@ -47,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			createGigLocationTable(db);
 			createStagesTable(db);
 			
-			createNewsArticlesFromLocalJson(db);
+			createNewsFromLocalJson(db);
 			createGigsFromLocalJson(db);
 			createFoodAndDrinkPageFromLocalFile(db);
 			createTransportationPageFromLocalFile(db);
@@ -92,7 +92,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.insert("config", "attributeValue", values);
 	}
 	
-	private void createNewsArticlesFromLocalJson(SQLiteDatabase db) throws Exception {
+	private void createNewsFromLocalJson(SQLiteDatabase db) throws Exception {
 		InputStream jsonStream = context.getResources().openRawResource(R.raw.news);
 		String json = StringUtil.convertStreamToString(jsonStream);
 		List<News> articles = JSONUtil.parseNewsFromJSON(json);
