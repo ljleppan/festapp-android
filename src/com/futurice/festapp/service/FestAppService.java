@@ -21,7 +21,7 @@ import com.futurice.festapp.dao.NewsDAO;
 import com.futurice.festapp.dao.StageDAO;
 import com.futurice.festapp.domain.Gig;
 import com.futurice.festapp.domain.GigLocation;
-import com.futurice.festapp.domain.NewsArticle;
+import com.futurice.festapp.domain.News;
 import com.futurice.festapp.util.CalendarUtil;
 import com.futurice.festapp.util.FestAppConstants;
 import com.futurice.festapp.util.HTTPUtil;
@@ -135,16 +135,16 @@ public class FestAppService extends Service{
 				location.getStageAndTime());
 	}
 
-	private void notify(NewsArticle article) {
+	private void notify(News article) {
 		Intent contentIntent = new Intent(getBaseContext(),
 				FestAppMainActivity.class);
-		contentIntent.putExtra("alert.newsArticle.url", article.getUrl());
+		contentIntent.putExtra("alert.news.id", article.getId());
 		int uniqueId = (int) (System.currentTimeMillis() & 0xfffffff);
 		PendingIntent pending = PendingIntent.getActivity(getBaseContext(),
 				uniqueId, contentIntent, 0);
 
 		String title = article.getTitle();
-		notify(pending, article.getUrl(), title, article.getDateString(), title);
+		notify(pending, article.getId(), title, CalendarUtil.dbFormat(article.getTime()), title);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -166,13 +166,14 @@ public class FestAppService extends Service{
 		try {
 			if (HTTPUtil.isContentUpdated(FestAppConstants.NEWS_JSON_URL,
 					ConfigDAO.getEtagForNews(getBaseContext()))) {
-				List<NewsArticle> newArticles = NewsDAO
+				List<News> newArticles = NewsDAO
 						.updateNewsOverHttp(getBaseContext());
 				if (newArticles != null && newArticles.size() > 0) {
-					for (NewsArticle article : newArticles) {
-						if (article.getDate() != null
+					for (News article : newArticles) {
+						if (article.getTime() != null
 								&& CalendarUtil.getMinutesBetweenTwoDates(
-										article.getDate(), new Date()) < FestAppConstants.SERVICE_NEWS_ALERT_THRESHOLD_IN_MINUTES) {
+										article.getTime(), new Date()) < 
+										FestAppConstants.SERVICE_NEWS_ALERT_THRESHOLD_IN_MINUTES) {
 							notify(article);
 						}
 					}

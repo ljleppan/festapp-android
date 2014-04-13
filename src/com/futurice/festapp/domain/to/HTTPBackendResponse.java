@@ -26,6 +26,7 @@ public class HTTPBackendResponse {
 		try {
 			return StringUtil.convertStreamToString(content);
 		} catch (IOException e) {
+			Log.e(TAG, e.getLocalizedMessage());
 			Log.e(TAG, "Cannot convert HTTP response to string.");
 			return "";
 		}

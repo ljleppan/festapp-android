@@ -3,7 +3,8 @@ package com.futurice.festapp.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.futurice.festapp.domain.NewsArticle;
+import com.futurice.festapp.domain.News;
+import com.futurice.festapp.util.CalendarUtil;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,10 +17,10 @@ import com.futurice.festapp.R;
 public class NewsArticleAdapter extends BaseAdapter {
 
 	private Context context;
-	private List<NewsArticle> items = new ArrayList<NewsArticle>();
+	private List<News> items = new ArrayList<News>();
 	private LayoutInflater inflater = null;
 	
-	public NewsArticleAdapter(Context context, List<NewsArticle> articles) {
+	public NewsArticleAdapter(Context context, List<News> articles) {
 		this.context = context;
 		this.items = articles;
 		this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -50,7 +51,9 @@ public class NewsArticleAdapter extends BaseAdapter {
 	    TextView newsDate = (TextView) view.findViewById(R.id.newsDate);
 	    
 	    newsTitle.setText(items.get(position).getTitle());
-	    newsDate.setText(items.get(position).getDateString());
+	    // TODO once we implement formatting for ui dates, we should change the
+	    // usage of dbFormat to that function.
+	    newsDate.setText(CalendarUtil.dbFormat((items.get(position).getTime())));
 	    return view;
 	  }
 

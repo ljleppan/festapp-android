@@ -5,7 +5,7 @@ public class FestAppConstants {
 	public static final String WEBSITE_BASE_URL = "http://festapp-server.herokuapp.com/";
 	
 	public static final String BASE_URL = "http://festapp-server.herokuapp.com";
-	public static final String NEWS_JSON_URL = "/api/news";
+	public static final String NEWS_JSON_URL = "/api/v1/news";
 	public static final String GIGS_JSON_URL = "/api/artists";
 	public static final String TRANSPORTATION_HTML_URL = "/api/arrival";
 	public static final String SERVICES_JSON_URL = "/api/services";
@@ -36,6 +36,6 @@ public class FestAppConstants {
 	public static final String LAST_MODIFIED_FAQ = null;
 		
 	// DEBUG variables
-	public final static boolean F_DEBUG = false;
+	public final static boolean F_DEBUG = true;
 	public volatile static boolean F_FORCE_DATA_FETCH = false;
 }

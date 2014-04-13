@@ -3,6 +3,7 @@ package com.futurice.festapp.domain;
 import java.util.Date;
 
 public class News {
+	private String id;
 	private String title;
 	private String image;
 	private String teaserText;
@@ -68,6 +69,14 @@ public class News {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	};
 	
 	

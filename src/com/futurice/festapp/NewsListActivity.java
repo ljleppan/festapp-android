@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.futurice.festapp.dao.NewsDAO;
 import com.futurice.festapp.domain.News;
-import com.futurice.festapp.domain.NewsArticle;
 import com.futurice.festapp.ui.NewsArticleAdapter;
 import com.futurice.festapp.util.StringUtil;
 
@@ -70,8 +69,8 @@ public class NewsListActivity extends Activity {
 
 		newsList.addHeaderView(header);
 		
-		//articles = NewsDAO.findAll(this);
-	    //newsList.setAdapter(new NewsArticleAdapter(this, articles));
+		articles = NewsDAO.getAll(this);
+	    newsList.setAdapter(new NewsArticleAdapter(this, articles));
 	    newsList.setOnItemClickListener(newsArticleClickListener);
 	}
 	

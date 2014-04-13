@@ -6,8 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.futurice.festapp.domain.News;
-import com.futurice.festapp.domain.NewsArticle;
+import com.futurice.festapp.domain.to.HTTPBackendResponse;
 import com.futurice.festapp.util.CalendarUtil;
+import com.futurice.festapp.util.FestAppConstants;
+import com.futurice.festapp.util.HTTPUtil;
+import com.futurice.festapp.util.JSONUtil;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -87,8 +90,7 @@ public class NewsDAO {
 		return values;
 	}
 
-	public static List<NewsArticle> updateNewsOverHttp(Context context) {
-		/*
+	public static List<News> updateNewsOverHttp(Context context) {
 		HTTPUtil httpUtil = new HTTPUtil();
 		HTTPBackendResponse response = httpUtil.performGet(FestAppConstants.NEWS_JSON_URL);
 		if (!response.isValid() || response.getStringContent() == null) {
@@ -96,30 +98,35 @@ public class NewsDAO {
 		}
 		ConfigDAO.setEtagForGigs(context, response.getEtag());
 		try {
-			List<NewsArticle> articles = parseFromJson(response.getStringContent());
+			List<News> articles = JSONUtil.parseNewsFromJSON(response.getStringContent());
 			
 			if (articles != null && articles.size() > 0) { // Hackish fail-safe
 				SQLiteDatabase db = null;
 				Cursor cursor = null;
-				List<NewsArticle> newArticles = new ArrayList<NewsArticle>();
+				List<News> newArticles = new ArrayList<News>();
 				try {
-					db = (new DatabaseHelper(context)).getWritableDatabase();
+					if (dbHelper == null){
+						dbHelper = new DatabaseHelper(context);
+					}
+					db = dbHelper.getWritableDatabase();
 					db.beginTransaction();
 					
 					int inserted = 0, updated = 0;
-					for (NewsArticle article : articles) {
-						NewsArticle existingArticle = findNewsArticle(db, article.getUrl());
+					for (News article : articles) {
+						News existingArticle = findNews(context, article.getId());
 						if (existingArticle != null) {
-							db.update("news", convertNewsArticleToContentValues(article), "url = ?", new String[] {article.getUrl()});
+							db.update("news", convertNewsToContentValues(article), "url = ?", 
+									new String[] {article.getId()});
 							updated++;
 						} else {
-							db.insert("news", "content", convertNewsArticleToContentValues(article));
+							db.insert("news", "content", convertNewsToContentValues(article));
 							inserted++;
 							newArticles.add(article);
 						}
 					}
 					db.setTransactionSuccessful();
-					Log.i(TAG, String.format("Successfully updated NewsArticles via HTTP. Result {received: %d, updated: %d, added: %d", articles.size(), updated, inserted));
+					Log.i(TAG, String.format("Successfully updated NewsArticles via HTTP. " +
+							"Result {received: %d, updated: %d, added: %d", articles.size(), updated, inserted));
 				} finally {
 					db.endTransaction();
 					closeDb(db, cursor);
@@ -130,7 +137,6 @@ public class NewsDAO {
 		} catch (Exception e) {
 			Log.w(TAG, "Received invalid JSON-structure", e);
 		}
-		*/
 		return null;
 	}
 
