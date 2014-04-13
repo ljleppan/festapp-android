@@ -19,7 +19,6 @@ import com.futurice.festapp.dao.ConfigDAO;
 import com.futurice.festapp.dao.GigDAO;
 import com.futurice.festapp.dao.NewsDAO;
 import com.futurice.festapp.domain.News;
-import com.futurice.festapp.domain.NewsArticle;
 import com.futurice.festapp.util.FestAppConstants;
 
 /**
@@ -145,11 +144,11 @@ public class FestAppMainActivity extends Activity {
 			    artistInfo.putExtra("gig.id", alertGigId);
 			    startActivity(artistInfo);
 			} else if (newsUrl != null) {
-				NewsArticle article = NewsDAO.findNews(getBaseContext(), newsUrl);
+				News article = NewsDAO.findNews(getBaseContext(), newsUrl);
 				if (article != null) {
 					Intent i = new Intent(getBaseContext(), NewsContentActivity.class);
 					i.putExtra("news.title", article.getTitle());
-					i.putExtra("news.date", article.getDateString());
+					i.putExtra("news.date", article.getTime());
 					i.putExtra("news.content", article.getContent());
 				    startActivity(i);
 				}
