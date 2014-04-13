@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.futurice.festapp.domain.Gig;
-import com.futurice.festapp.domain.NewsArticle;
+import com.futurice.festapp.domain.News;
 import com.futurice.festapp.domain.Stage;
 import com.futurice.festapp.util.FestAppConstants;
+import com.futurice.festapp.util.JSONUtil;
 import com.futurice.festapp.util.StringUtil;
 
 import android.content.ContentValues;
@@ -27,7 +28,7 @@ import com.futurice.festapp.R;
 public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final String DB_NAME = "festapp_db";
-	private static final int DB_VERSION = 1; // Latest release at the market: 1
+	private static final int DB_VERSION = 2;
 	private static final String TAG = "DatabaseHelper";
 	
 	private Context context;
@@ -94,10 +95,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private void createNewsArticlesFromLocalJson(SQLiteDatabase db) throws Exception {
 		InputStream jsonStream = context.getResources().openRawResource(R.raw.news);
 		String json = StringUtil.convertStreamToString(jsonStream);
-		List<NewsArticle> articles = NewsDAO.parseFromJson(json);
+		List<News> articles = JSONUtil.parseNewsFromJSON(json);
 
-		for (NewsArticle article : articles) {
-			ContentValues values = NewsDAO.convertNewsArticleToContentValues(article);
+		for (News article : articles) {
+			ContentValues values = NewsDAO.convertNewsToContentValues(article);
 			db.insert("news", "content", values);
 		}
 		ContentValues values = ConfigDAO.createConfigContentValues(ConfigDAO.ATTR_ETAG_FOR_NEWS, FestAppConstants.LAST_MODIFIED_NEWS);
