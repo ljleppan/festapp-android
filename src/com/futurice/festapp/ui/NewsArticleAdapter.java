@@ -51,9 +51,7 @@ public class NewsArticleAdapter extends BaseAdapter {
 	    TextView newsDate = (TextView) view.findViewById(R.id.newsDate);
 	    
 	    newsTitle.setText(items.get(position).getTitle());
-	    // TODO once we implement formatting for ui dates, we should change the
-	    // usage of dbFormat to that function.
-	    newsDate.setText(CalendarUtil.dbFormat((items.get(position).getTime())));
+	    newsDate.setText(CalendarUtil.formatDateToUIString((items.get(position).getTime())));
 	    return view;
 	  }
 

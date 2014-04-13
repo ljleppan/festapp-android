@@ -144,7 +144,7 @@ public class FestAppService extends Service{
 				uniqueId, contentIntent, 0);
 
 		String title = article.getTitle();
-		notify(pending, article.getId(), title, CalendarUtil.dbFormat(article.getTime()), title);
+		notify(pending, article.getId(), title, CalendarUtil.formatDateToUIString(article.getTime()), title);
 	}
 
 	@SuppressWarnings("deprecation")
