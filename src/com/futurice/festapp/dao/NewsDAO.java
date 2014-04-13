@@ -9,6 +9,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.futurice.festapp.domain.News;
 import com.futurice.festapp.domain.NewsArticle;
 import com.futurice.festapp.domain.to.HTTPBackendResponse;
 import com.futurice.festapp.util.HTTPUtil;
@@ -30,31 +31,52 @@ public class NewsDAO {
 	
 	private static DateFormat RSS_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm"); //new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
 	private static final DateFormat DB_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-	private static final String TAG = "NewsDAO";
-	private static final String[] NEWS_COLUMNS = { "url", "title", "newsDate", "content" };
-	private static final int URL = 0;
-	private static final int TITLE = 1;
-	private static final int NEWS_DATE = 2;
-	private static final int CONTENT = 3;
+	private static final String TAG = NewsDAO.class.getSimpleName();
+
 	
-	public static List<NewsArticle> findAll(Context context) {
-		List<NewsArticle> articles = new ArrayList<NewsArticle>();
+	public static List<News> getAll(Context context) {
+		List<News> articles = new ArrayList<News>();
 		SQLiteDatabase db = null;
 		Cursor cursor = null;
 		try {
 			db = (new DatabaseHelper(context)).getWritableDatabase();
-			cursor = db.rawQuery("SELECT url, title, newsDate, content FROM news ORDER BY newsDate DESC", new String[]{});
+			cursor = db.rawQuery("SELECT title, time, content FROM news ORDER BY time DESC", new String[]{});
 			while (cursor.moveToNext()) {
-				String url = cursor.getString(URL);
-		        String title = cursor.getString(TITLE);
-		        Date date = getDate(cursor.getString(NEWS_DATE));
-		        String content = cursor.getString(CONTENT);
-		        articles.add(new NewsArticle(url, title, date, content));
+		        String title = cursor.getString(0);
+		        Date date = getDate(cursor.getString(1));
+		        String content = cursor.getString(2);
+		        articles.add(new News());
 			}
 		} finally {
 			closeDb(db, cursor);
 		}
 		return articles;
+	}
+	
+	public static List<News> getLatest(int count, Context context) {
+		List<News> news = new ArrayList<News>();
+		
+		SQLiteDatabase db = null;
+		Cursor cursor = null;
+		
+		try {
+			db = (new DatabaseHelper(context)).getReadableDatabase();
+			cursor = db.rawQuery("SELECT title, time, content FROM news ORDER BY time DESC", new String[]{});
+			while (cursor.moveToNext() && count > 0) {
+		        String title = cursor.getString(1);
+		        Date date = getDate(cursor.getString(2));
+		        String content = cursor.getString(3);
+		        news.add(new News(title, "", "", content, date, ""));
+		        count--;
+			}
+		} finally {
+			closeDb(db, cursor);
+		}
+		return news;
+	}
+	
+	public static NewsArticle findNewsArticle(Context context, String id) {
+		return null;
 	}
 	
 	public static ContentValues convertNewsArticleToContentValues(NewsArticle article) {
@@ -76,6 +98,7 @@ public class NewsDAO {
 	}
 
 	public static List<NewsArticle> updateNewsOverHttp(Context context) {
+		/*
 		HTTPUtil httpUtil = new HTTPUtil();
 		HTTPBackendResponse response = httpUtil.performGet(FestAppConstants.NEWS_JSON_URL);
 		if (!response.isValid() || response.getContent() == null) {
@@ -117,40 +140,10 @@ public class NewsDAO {
 		} catch (Exception e) {
 			Log.w(TAG, "Received invalid JSON-structure", e);
 		}
+		*/
 		return null;
 	}
-	
-	private static NewsArticle findNewsArticle(SQLiteDatabase db, String url) {
-		Cursor cursor = db.query("news", NEWS_COLUMNS, "url = ?", new String[]{url}, null, null, null);
-		NewsArticle article = null;
-		if (cursor.getCount() == 1) {
-			cursor.moveToFirst();
-			article = convertCursorToNewsArticle(cursor);
-		}
-		if (cursor != null) {
-			cursor.close();
-		}
-		return article;
-	}
-	
-	public static NewsArticle findNewsArticle(Context context, String url) {
-		SQLiteDatabase db = null;
-		Cursor cursor = null;
-		try {
-			db = (new DatabaseHelper(context)).getReadableDatabase();
-			return findNewsArticle(db, url);
-		} finally {
-			closeDb(db, cursor);
-		}
-	}
-	
-	private static NewsArticle convertCursorToNewsArticle(Cursor cursor) {
-		return new NewsArticle(
-				cursor.getString(URL),
-				cursor.getString(TITLE),
-				getDate(cursor.getString(NEWS_DATE)),
-				cursor.getString(CONTENT));
-	}
+
 	
 	public static List<NewsArticle> parseFromJson(String json) throws Exception {
 		List<NewsArticle> articles = new ArrayList<NewsArticle>();
