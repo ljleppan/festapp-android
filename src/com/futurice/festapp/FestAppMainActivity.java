@@ -19,6 +19,7 @@ import com.futurice.festapp.dao.ConfigDAO;
 import com.futurice.festapp.dao.GigDAO;
 import com.futurice.festapp.dao.NewsDAO;
 import com.futurice.festapp.domain.News;
+import com.futurice.festapp.util.CalendarUtil;
 import com.futurice.festapp.util.FestAppConstants;
 
 /**
@@ -106,7 +107,7 @@ public class FestAppMainActivity extends Activity {
 	}
 	
 	private void setContentFromNewsArticle(News news, TextView v) {
-		String content = news.getTitle()+"<br><small>"+news.getTime().toString()+"</small>";
+		String content = news.getTitle()+"<br><small>"+CalendarUtil.formatDateToUIString(news.getTime())+"</small>";
 		v.setText(Html.fromHtml(content));
 	}
 
