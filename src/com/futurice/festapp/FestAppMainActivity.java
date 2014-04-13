@@ -82,10 +82,16 @@ public class FestAppMainActivity extends Activity {
 		createMainMenuItems();
 		handleNotificationEvents();
 		setFonts();
-		initializeNews();
+		updateNewsArea();
 	}
 	
-	private void initializeNews() {
+	@Override
+	public void onRestart(){
+		super.onRestart();
+		updateNewsArea();
+	}
+	
+	private void updateNewsArea() {
 		List<News> latest = NewsDAO.getLatest(2, getBaseContext());
 		TextView v;
 		
