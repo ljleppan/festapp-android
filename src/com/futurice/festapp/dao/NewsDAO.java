@@ -44,14 +44,15 @@ public class NewsDAO {
 	 * @param context context for creating databasehelper
 	 * @return list of news
 	 */
-	private static List<News> readNews(Context context, int limit, String selection, String[] selectionArgs){
+	private static List<News> readNews(Context context, int limit, String selection, 
+			String[] selectionArgs){
 		List<News> news = new ArrayList<News>();
 		SQLiteDatabase db = (new DatabaseHelper(context)).getReadableDatabase();
 		
 		Cursor cursor = null;
 		
 		try {
-			cursor = db.query("news", columns, null, null, null, null, "time", 
+			cursor = db.query("news", columns, null, null, null, null, "time DESC", 
 					limit > 0 ? String.valueOf(limit) : null);
 			while (cursor.moveToNext()) {
 				String id = cursor.getString(0);
