@@ -5,18 +5,18 @@ import java.util.Date;
 public class News {
 	private String title;
 	private String image;
-	private String teaser_text;
+	private String teaserText;
 	private String content;
 	private Date time;
 	private String status;
 
 	public News(){}
 
-	public News(String title, String image, String teaser_text, String content,
+	public News(String title, String image, String teaserText, String content,
 			Date time, String status) {
 		this.title = title;
 		this.image = image;
-		this.teaser_text = teaser_text;
+		this.teaserText = teaserText;
 		this.content = content;
 		this.time = time;
 		this.status = status;
@@ -38,12 +38,12 @@ public class News {
 		this.image = image;
 	}
 
-	public String getTeaser_text() {
-		return teaser_text;
+	public String getTeaserText() {
+		return teaserText;
 	}
 
-	public void setTeaser_text(String teaser_text) {
-		this.teaser_text = teaser_text;
+	public void setTeaser_text(String teaserText) {
+		this.teaserText = teaserText;
 	}
 
 	public String getContent() {
