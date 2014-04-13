@@ -184,7 +184,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				"favorite BOOLEAN, " +
 				"alerted BOOLEAN, " +
 				"youtube TEXT, " +
-				"spotify TEXT)";
+				"spotify TEXT," +
+				"artistimage TEXT)";
 		db.execSQL(sql);
 	}
 	
