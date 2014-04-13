@@ -300,7 +300,6 @@ public class HTTPUtil {
 				httpBackendResponse.setEtag(etag);
 			}
 			httpBackendResponse.setValid(true);
-			//httpResponse.getEntity().consumeContent();
 		} catch (Exception e) {
 			Log.e(TAG, "Cannot execute HTTP request", e);
 			httpBackendResponse.setValid(false);

@@ -93,12 +93,13 @@ public class NewsDAO {
 	public static List<News> updateNewsOverHttp(Context context) {
 		HTTPUtil httpUtil = new HTTPUtil();
 		HTTPBackendResponse response = httpUtil.performGet(FestAppConstants.NEWS_JSON_URL);
-		if (!response.isValid() || response.getStringContent() == null) {
+		String stringContent = null;
+		if (!response.isValid() || (stringContent = response.getStringContent()) == null) {
 			return null;
 		}
 		ConfigDAO.setEtagForGigs(context, response.getEtag());
 		try {
-			List<News> articles = JSONUtil.parseNewsFromJSON(response.getStringContent());
+			List<News> articles = JSONUtil.parseNewsFromJSON(stringContent);
 			
 			if (articles != null && articles.size() > 0) { // Hackish fail-safe
 				SQLiteDatabase db = null;
