@@ -4,13 +4,15 @@ import java.util.List;
 
 import com.futurice.festapp.dao.NewsDAO;
 import com.futurice.festapp.domain.News;
-import com.futurice.festapp.ui.NewsArticleAdapter;
+import com.futurice.festapp.ui.NewsAdapter;
 import com.futurice.festapp.util.StringUtil;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -62,15 +64,9 @@ public class NewsListActivity extends Activity {
 	private void createNewsList() {
 		newsList = (ListView) findViewById(R.id.newsList);
 		
-		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View header = inflater.inflate(R.layout.list_header, null, false);
-
-		((TextView)header.findViewById(R.id.listTitle)).setText(getResources().getString(R.string.News));
-
-		newsList.addHeaderView(header);
-		
 		articles = NewsDAO.getAll(this);
-	    newsList.setAdapter(new NewsArticleAdapter(this, articles));
+	    
+		newsList.setAdapter(new NewsAdapter(this, articles));
 	    newsList.setOnItemClickListener(newsArticleClickListener);
 	}
 	
