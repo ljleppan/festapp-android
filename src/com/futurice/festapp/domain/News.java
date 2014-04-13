@@ -13,8 +13,9 @@ public class News {
 
 	public News(){}
 
-	public News(String title, String image, String teaserText, String content,
+	public News(String id, String title, String image, String teaserText, String content,
 			Date time, String status) {
+		this.id = id;
 		this.title = title;
 		this.image = image;
 		this.teaserText = teaserText;

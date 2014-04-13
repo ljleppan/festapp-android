@@ -26,46 +26,39 @@ import android.util.Log;
 public class NewsDAO {
 	
 	private static final String TAG = NewsDAO.class.getSimpleName();
-	private static DatabaseHelper dbHelper;
+	private static final String[] columns = {"id", "title", "time", "content"};
 
 	
 	public static List<News> getAll(Context context) {
-		return readNews(-1, context);
+		return readNews(context, -1, null, null);
 	}
 	
 	public static List<News> getLatest(int count, Context context) {
-		return readNews(count, context);
+		return readNews(context, -1, null, null);
 	}
 	
 	/**
 	 * Function for reading news from local database.
-	 * @param limit limit of returned articles. Limit of -1 means no
+	 * @param limit limit of returned articles. Limit of zero or less means no
 	 * limit clause is used.
 	 * @param context context for creating databasehelper
 	 * @return list of news
 	 */
-	private static List<News> readNews(int limit, Context context){
+	private static List<News> readNews(Context context, int limit, String selection, String[] selectionArgs){
 		List<News> news = new ArrayList<News>();
-		if (dbHelper == null){
-			dbHelper = new DatabaseHelper(context);
-		}
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = (new DatabaseHelper(context)).getReadableDatabase();
 		
 		Cursor cursor = null;
 		
 		try {
-			// TODO this kind of query creating is brutal and bad. It should be
-			// changed in the future
-			String sql = "SELECT title, time, content FROM news ORDER BY time DESC";
-			if (limit > -1){
-				sql += " LIMIT " + limit;
-			}
-			cursor = db.rawQuery(sql, new String[]{});
+			cursor = db.query("news", columns, null, null, null, null, "time", 
+					limit > 0 ? String.valueOf(limit) : null);
 			while (cursor.moveToNext()) {
-		        String title = cursor.getString(0);
-		        Date date = CalendarUtil.getDbDate(cursor.getString(1));
-		        String content = cursor.getString(2);
-		        news.add(new News(title, "", "", content, date, ""));
+				String id = cursor.getString(0);
+		        String title = cursor.getString(1);
+		        Date time = CalendarUtil.getDbDate(cursor.getString(2));
+		        String content = cursor.getString(3);
+		        news.add(new News(id, title, "", "", content, time, ""));
 			}
 		}
 		catch (ParseException e){
@@ -78,8 +71,11 @@ public class NewsDAO {
 	}
 	
 	public static News findNews(Context context, String id) {
-		// TODO not implemented
-		return null;
+		List<News> news = readNews(context, 1, "id = ?", new String[]{id});
+		if (news.isEmpty())
+			return null;
+		else
+			return news.get(0);
 	}
 	
 	public static ContentValues convertNewsToContentValues(News article) {
@@ -103,20 +99,15 @@ public class NewsDAO {
 			
 			if (articles != null && articles.size() > 0) { // Hackish fail-safe
 				SQLiteDatabase db = null;
-				Cursor cursor = null;
 				List<News> newArticles = new ArrayList<News>();
-				try {
-					if (dbHelper == null){
-						dbHelper = new DatabaseHelper(context);
-					}
-					db = dbHelper.getWritableDatabase();
-					db.beginTransaction();
-					
-					int inserted = 0, updated = 0;
-					for (News article : articles) {
-						News existingArticle = findNews(context, article.getId());
+				int inserted = 0, updated = 0;
+				for (News article : articles) {
+					News existingArticle = findNews(context, article.getId());
+					try{
+						db = (new DatabaseHelper(context)).getWritableDatabase();
+						db.beginTransaction();
 						if (existingArticle != null) {
-							db.update("news", convertNewsToContentValues(article), "url = ?", 
+							db.update("news", convertNewsToContentValues(article), "id = ?", 
 									new String[] {article.getId()});
 							updated++;
 						} else {
@@ -124,14 +115,15 @@ public class NewsDAO {
 							inserted++;
 							newArticles.add(article);
 						}
+						db.setTransactionSuccessful();
 					}
-					db.setTransactionSuccessful();
-					Log.i(TAG, String.format("Successfully updated NewsArticles via HTTP. " +
-							"Result {received: %d, updated: %d, added: %d", articles.size(), updated, inserted));
-				} finally {
-					db.endTransaction();
-					closeDb(db, cursor);
+					finally{
+						db.endTransaction();
+						db.close();
+					}
 				}
+				Log.i(TAG, String.format("Successfully updated NewsArticles via HTTP. " +
+						"Result {received: %d, updated: %d, added: %d", articles.size(), updated, inserted));
 				return newArticles;
 			}
 			
