@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.futurice.festapp.domain.News;
-import com.futurice.festapp.domain.NewsArticle;
 
 public class JSONUtil {
 	
@@ -38,7 +37,7 @@ public class JSONUtil {
 	 * @throws JSONException	Thrown if unable to build a JSONArray from the input
 	 */
 	public static List<News> parseNewsFromJSON(String json) throws JSONException {
-		List<News> articles = new ArrayList<News>();
+		List<News> news = new ArrayList<News>();
 		JSONArray list = new JSONArray(json);
 		
 		for (int i=0; i < list.length(); i++) {
@@ -46,14 +45,14 @@ public class JSONUtil {
 				JSONObject newsObject = list.getJSONObject(i);
 				News article = parseSingleNewsArticleFromJSON(newsObject);
 				if (article != null){
-					articles.add(article);
+					news.add(article);
 				}
 			} catch (Exception e) {
 				Log.w(TAG, "Received invalid JSON-structure", e);
 			}
 		}
 		
-		return articles;
+		return news;
 	}
 	
 	/**

@@ -27,45 +27,42 @@ public class NewsDAO {
 
 	
 	public static List<News> getAll(Context context) {
-		List<News> articles = new ArrayList<News>();
-		Cursor cursor = null;
-		if (dbHelper == null){
-			dbHelper = new DatabaseHelper(context);
-		}
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		try {
-			cursor = db.rawQuery("SELECT title, time, content FROM news ORDER BY time DESC", new String[]{});
-			while (cursor.moveToNext()) {
-		        String title = cursor.getString(0);
-		        Date time = CalendarUtil.getDbDate(cursor.getString(1));
-		        String content = cursor.getString(2);
-		        articles.add(new News());
-			}
-		} catch (ParseException e) {
-			Log.e(TAG, e.getLocalizedMessage());
-		} finally {
-			closeDb(db, cursor);
-		}
-		return articles;
+		return readNews(-1, context);
 	}
 	
 	public static List<News> getLatest(int count, Context context) {
+		return readNews(count, context);
+	}
+	
+	/**
+	 * Function for reading news from local database.
+	 * @param limit limit of returned articles. Limit of -1 means no
+	 * limit clause is used.
+	 * @param context context for creating databasehelper
+	 * @return list of news
+	 */
+	private static List<News> readNews(int limit, Context context){
 		List<News> news = new ArrayList<News>();
 		if (dbHelper == null){
 			dbHelper = new DatabaseHelper(context);
 		}
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		
 		Cursor cursor = null;
 		
 		try {
-			cursor = db.rawQuery("SELECT title, time, content FROM news ORDER BY time DESC", new String[]{});
-			while (cursor.moveToNext() && count > 0) {
-		        String title = cursor.getString(1);
-		        Date date = CalendarUtil.getDbDate(cursor.getString(2));
-		        String content = cursor.getString(3);
+			// TODO this kind of query creating is brutal and bad. It should be
+			// changed in the future
+			String sql = "SELECT title, time, content FROM news ORDER BY time DESC";
+			if (limit > -1){
+				sql += " LIMIT " + limit;
+			}
+			cursor = db.rawQuery(sql, new String[]{});
+			while (cursor.moveToNext()) {
+		        String title = cursor.getString(0);
+		        Date date = CalendarUtil.getDbDate(cursor.getString(1));
+		        String content = cursor.getString(2);
 		        news.add(new News(title, "", "", content, date, ""));
-		        count--;
 			}
 		}
 		catch (ParseException e){
@@ -77,7 +74,8 @@ public class NewsDAO {
 		return news;
 	}
 	
-	public static NewsArticle findNewsArticle(Context context, String id) {
+	public static News findNews(Context context, String id) {
+		// TODO not implemented
 		return null;
 	}
 	

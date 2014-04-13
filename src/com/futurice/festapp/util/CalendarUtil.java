@@ -11,7 +11,7 @@ import java.util.Map;
 public class CalendarUtil {
 	
 	private static final Map<Integer, String> weekDays = new HashMap<Integer, String>();
-	private static final String DATE_PARSER_TEMPLATE = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";	//2001-07-04T12:08:56.235-0700
+	private static final String DATE_PARSER_TEMPLATE = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	private static final DateFormat DATE_PARSER = new SimpleDateFormat(DATE_PARSER_TEMPLATE);
 	private static final DateFormat DB_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
@@ -44,8 +44,12 @@ public class CalendarUtil {
 	 * @return					The parsed Date object
 	 * @throws ParseException	Thrown if parsing can not be finished for any reason
 	 */
-	public static Date parseDateFromString(String string) throws ParseException {
-		return DATE_PARSER.parse(string);
+	public static Date parseDateFromString(final String string) throws ParseException {
+		String s = string;
+		if (s.contains("Z")){
+			s = s.replace("Z", "-0000");
+		}
+		return DATE_PARSER.parse(s);
 	}
 
 	/**
