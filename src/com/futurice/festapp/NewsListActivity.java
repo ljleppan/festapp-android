@@ -5,6 +5,7 @@ import java.util.List;
 import com.futurice.festapp.dao.NewsDAO;
 import com.futurice.festapp.domain.News;
 import com.futurice.festapp.ui.NewsAdapter;
+import com.futurice.festapp.util.CalendarUtil;
 import com.futurice.festapp.util.StringUtil;
 
 import android.app.Activity;
@@ -42,7 +43,7 @@ public class NewsListActivity extends Activity {
 				if (StringUtil.isNotEmpty(article.getContent())) {
 					Intent i = new Intent(getBaseContext(), NewsContentActivity.class);
 					i.putExtra("news.title", article.getTitle());
-					i.putExtra("news.date", article.getTime());
+					i.putExtra("news.date", CalendarUtil.formatDateToUIString(article.getTime()));
 					i.putExtra("news.content", article.getContent());
 					startActivity(i);
 					return;
