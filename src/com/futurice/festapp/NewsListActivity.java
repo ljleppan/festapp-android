@@ -3,6 +3,7 @@ package com.futurice.festapp;
 import java.util.List;
 
 import com.futurice.festapp.dao.NewsDAO;
+import com.futurice.festapp.domain.News;
 import com.futurice.festapp.domain.NewsArticle;
 import com.futurice.festapp.ui.NewsArticleAdapter;
 import com.futurice.festapp.util.StringUtil;
@@ -18,6 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.futurice.festapp.R;
 
 /**
@@ -28,18 +30,18 @@ import com.futurice.festapp.R;
 public class NewsListActivity extends Activity {
 	
 	private ListView newsList;
-	private List<NewsArticle> articles;
+	private List<News> articles;
 	
 	private OnItemClickListener newsArticleClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> av, View v, int index, long arg) {
 			Object o = av.getItemAtPosition(index);
-			if (o instanceof NewsArticle) {
-				NewsArticle article = (NewsArticle) o;
-				if (StringUtil.isNotEmpty(article.getUrl())) {
+			if (o instanceof News) {
+				News article = (News) o;
+				if (StringUtil.isNotEmpty(article.getContent())) {
 					Intent i = new Intent(getBaseContext(), NewsContentActivity.class);
 					i.putExtra("news.title", article.getTitle());
-					i.putExtra("news.date", article.getDateString());
+					i.putExtra("news.date", article.getTime());
 					i.putExtra("news.content", article.getContent());
 					startActivity(i);
 					return;
@@ -68,8 +70,8 @@ public class NewsListActivity extends Activity {
 
 		newsList.addHeaderView(header);
 		
-		articles = NewsDAO.findAll(this);
-	    newsList.setAdapter(new NewsArticleAdapter(this, articles));
+		//articles = NewsDAO.findAll(this);
+	    //newsList.setAdapter(new NewsArticleAdapter(this, articles));
 	    newsList.setOnItemClickListener(newsArticleClickListener);
 	}
 	

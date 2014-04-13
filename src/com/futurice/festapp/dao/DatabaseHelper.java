@@ -69,8 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				"teaser_text TEXT, " +
 				"content TEXT, " +
 				"time TIMESTAMP," +
-				"status TEXT," +
-				"content TEXT" +
+				"status TEXT" +
 				")";
 		db.execSQL(sql);
 	}
